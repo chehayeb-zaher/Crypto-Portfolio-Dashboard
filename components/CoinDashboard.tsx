@@ -5,8 +5,15 @@ import type { DashboardCoins } from "@/types/coingecko";
 import { EMPTY_HOLDING, loadHoldings, saveHoldings, type Holding } from "@/lib/holdings";
 import CoinSection from "@/components/CoinSection";
 import PortfolioModal from "@/components/PortfolioModal";
+import type { ChangeColumnKey, ColumnVisibility } from "@/components/CoinTable";
 
 const REFRESH_INTERVAL_MS = 30_000;
+
+const CHANGE_COLUMNS: { key: ChangeColumnKey; label: string }[] = [
+  { key: "change24h", label: "24H" },
+  { key: "change7d", label: "7D" },
+  { key: "change30d", label: "30D" },
+];
 
 export default function CoinDashboard({
   initialData,
@@ -22,6 +29,15 @@ export default function CoinDashboard({
   // double-invoked effects in development).
   const [holdings, setHoldings] = useState<Record<string, Holding> | null>(null);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
+  const [columnVisibility, setColumnVisibility] = useState<ColumnVisibility>({
+    change24h: true,
+    change7d: true,
+    change30d: true,
+  });
+
+  function toggleColumn(key: ChangeColumnKey) {
+    setColumnVisibility((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
 
   useEffect(() => {
     setHoldings(loadHoldings());
@@ -88,12 +104,33 @@ export default function CoinDashboard({
           />
         </div>
 
-        <button
-          onClick={() => setIsPortfolioOpen(true)}
-          className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-85"
-        >
-          Portfolio
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
+              Show:
+            </span>
+            {CHANGE_COLUMNS.map((col) => (
+              <button
+                key={col.key}
+                onClick={() => toggleColumn(col.key)}
+                className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-colors ${
+                  columnVisibility[col.key]
+                    ? "border-navy bg-navy text-white"
+                    : "border-line bg-white text-muted hover:text-ink"
+                }`}
+              >
+                {col.label}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setIsPortfolioOpen(true)}
+            className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-85"
+          >
+            Portfolio
+          </button>
+        </div>
       </div>
 
       <CoinSection
@@ -103,6 +140,7 @@ export default function CoinDashboard({
         holdings={holdings ?? {}}
         onAmountChange={handleAmountChange}
         onEntryChange={handleEntryChange}
+        columnVisibility={columnVisibility}
       />
 
       <CoinSection
@@ -112,6 +150,7 @@ export default function CoinDashboard({
         holdings={holdings ?? {}}
         onAmountChange={handleAmountChange}
         onEntryChange={handleEntryChange}
+        columnVisibility={columnVisibility}
       />
 
       {isPortfolioOpen && (

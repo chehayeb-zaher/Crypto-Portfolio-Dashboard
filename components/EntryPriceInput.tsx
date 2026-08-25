@@ -93,7 +93,7 @@ export default function EntryPriceInput({
       </div>
 
       {mode === "price" ? (
-        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-3 py-1.5">
+        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
           <span className="text-muted">$</span>
           <input
             type="number"
@@ -102,17 +102,17 @@ export default function EntryPriceInput({
             value={entryPrice ?? ""}
             onChange={(e) => onChange(Number(e.target.value) || null, null)}
             placeholder="0.00"
-            className="w-24 bg-transparent text-right tabular-nums text-ink focus:outline-none"
+            className="w-16 bg-transparent text-right tabular-nums text-ink focus:outline-none"
           />
         </div>
       ) : (
-        <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-col items-center gap-1">
           <input
             type="date"
             value={dateInput}
             max={today()}
             onChange={(e) => handleDateChange(e.target.value)}
-            className="rounded-full border border-line bg-white px-3 py-1.5 text-xs text-ink focus:outline-none"
+            className="w-full rounded-full border border-line bg-white px-2 py-1.5 text-xs text-ink focus:outline-none"
           />
           {loading && (
             <span className="text-[11px] text-muted">Fetching price…</span>

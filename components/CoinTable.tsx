@@ -15,6 +15,14 @@ export type SortKey =
   | "roi";
 export type SortDirection = "asc" | "desc";
 
+export type ChangeColumnKey = "change24h" | "change7d" | "change30d";
+
+export interface ColumnVisibility {
+  change24h: boolean;
+  change7d: boolean;
+  change30d: boolean;
+}
+
 const usdFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -43,12 +51,12 @@ function formatPercent(value: number | null | undefined): string {
 
 function PercentCell({ value }: { value: number | null | undefined }) {
   if (value === null || value === undefined) {
-    return <td className="px-4 py-4 text-right text-muted">—</td>;
+    return <td className="px-2 py-4 text-right text-muted">—</td>;
   }
   const isUp = value >= 0;
   return (
     <td
-      className={`px-4 py-4 text-right font-semibold tabular-nums ${
+      className={`px-2 py-4 text-right font-semibold tabular-nums ${
         isUp ? "text-up" : "text-down"
       }`}
     >
@@ -67,7 +75,7 @@ function RoiCell({
   currentPrice: number;
 }) {
   if (!entryPrice || !amount) {
-    return <td className="px-4 py-4 text-right text-muted">—</td>;
+    return <td className="px-2 py-4 text-right text-muted">—</td>;
   }
   const units = amount / entryPrice;
   const currentValue = units * currentPrice;
@@ -75,13 +83,13 @@ function RoiCell({
   const isUp = pct >= 0;
   return (
     <td
-      className={`px-4 py-4 text-right font-semibold tabular-nums ${
+      className={`px-2 py-4 text-right font-semibold tabular-nums ${
         isUp ? "text-up" : "text-down"
       }`}
     >
       {usdFormatter2dp.format(currentValue)}
-      <span className="ml-1.5 font-normal text-muted">
-        ({formatPercent(pct)})
+      <span className="mt-0.5 block font-normal text-muted">
+        {formatPercent(pct)}
       </span>
     </td>
   );
@@ -91,18 +99,33 @@ type Column =
   | { key: SortKey; label: string; align: "left" | "right"; sortable?: true }
   | { key: "investment" | "entry"; label: string; align: "left" | "right"; sortable: false };
 
-const COLUMNS: Column[] = [
+const ALL_COLUMNS: Column[] = [
   { key: "rank", label: "#", align: "left" },
   { key: "name", label: "Coin", align: "left" },
   { key: "price", label: "Price", align: "right" },
   { key: "change24h", label: "24h", align: "right" },
   { key: "change7d", label: "7d", align: "right" },
   { key: "change30d", label: "30d", align: "right" },
-  { key: "marketCap", label: "Market Cap", align: "right" },
+  { key: "marketCap", label: "Mkt Cap", align: "right" },
   { key: "investment", label: "Investment", align: "right", sortable: false },
   { key: "entry", label: "Entry Price", align: "right", sortable: false },
   { key: "roi", label: "ROI", align: "right" },
 ];
+
+const CHANGE_COLUMN_KEYS: ChangeColumnKey[] = ["change24h", "change7d", "change30d"];
+
+const COLUMN_WEIGHT: Record<string, number> = {
+  rank: 4,
+  name: 15,
+  price: 10,
+  change24h: 8,
+  change7d: 8,
+  change30d: 8,
+  marketCap: 9,
+  investment: 13,
+  entry: 15,
+  roi: 15,
+};
 
 function SortArrow({ direction }: { direction: SortDirection }) {
   return (
@@ -120,6 +143,7 @@ export default function CoinTable({
   holdings,
   onAmountChange,
   onEntryChange,
+  columnVisibility,
 }: {
   coins: CoinMarketData[];
   sortKey: SortKey;
@@ -132,25 +156,41 @@ export default function CoinTable({
     entryPrice: number | null,
     entryDate: string | null
   ) => void;
+  columnVisibility: ColumnVisibility;
 }) {
+  const columns = ALL_COLUMNS.filter(
+    (col) =>
+      !CHANGE_COLUMN_KEYS.includes(col.key as ChangeColumnKey) ||
+      columnVisibility[col.key as ChangeColumnKey]
+  );
+  const totalWeight = columns.reduce((sum, col) => sum + COLUMN_WEIGHT[col.key], 0);
+
   return (
     <div className="overflow-x-auto border border-line bg-white">
-      <table className="w-full min-w-[1180px] border-collapse text-sm">
+      <table className="w-full table-fixed border-collapse text-sm">
+        <colgroup>
+          {columns.map((col, i) => (
+            <col
+              key={i}
+              style={{ width: `${((COLUMN_WEIGHT[col.key] / totalWeight) * 100).toFixed(2)}%` }}
+            />
+          ))}
+        </colgroup>
         <thead>
           <tr className="border-b border-line bg-mist/60">
-            {COLUMNS.map((col, i) =>
+            {columns.map((col, i) =>
               col.sortable === false ? (
                 <th
                   key={i}
-                  className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-muted"
+                  className="px-2 py-3 text-center text-xs font-semibold uppercase tracking-wide text-muted"
                 >
                   {col.label}
                 </th>
               ) : (
-                <th key={i} className="px-4 py-3 text-center font-semibold">
+                <th key={i} className="px-2 py-3 text-center font-semibold">
                   <button
                     onClick={() => onSort(col.key as SortKey)}
-                    className="inline-flex w-full items-center justify-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-muted transition-colors hover:text-ink"
+                    className="inline-flex w-full items-center justify-center gap-1 text-xs font-semibold uppercase tracking-wide text-muted transition-colors hover:text-ink"
                   >
                     {col.label}
                     {sortKey === col.key && (
@@ -173,21 +213,21 @@ export default function CoinTable({
                 key={coin.id}
                 className="border-b border-line last:border-0 hover:bg-mist/40"
               >
-                <td className="px-4 py-4 text-muted">{coin.market_cap_rank}</td>
-                <td className="px-4 py-4">
+                <td className="px-2 py-4 text-muted">{coin.market_cap_rank}</td>
+                <td className="px-2 py-4">
                   <Link
                     href={`/coin/${coin.id}`}
-                    className="flex items-center gap-3 group w-fit"
+                    className="flex items-center gap-2 group w-fit"
                   >
                     <Image
                       src={coin.image}
                       alt={coin.name}
-                      width={28}
-                      height={28}
-                      className="rounded-full"
+                      width={24}
+                      height={24}
+                      className="rounded-full shrink-0"
                     />
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-ink group-hover:underline">
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate font-semibold text-ink group-hover:underline">
                         {coin.name}
                       </span>
                       <span className="text-xs uppercase text-muted">
@@ -196,16 +236,22 @@ export default function CoinTable({
                     </div>
                   </Link>
                 </td>
-                <td className="px-4 py-4 text-right tabular-nums">
+                <td className="px-2 py-4 text-right tabular-nums">
                   {usdFormatter.format(coin.current_price)}
                 </td>
-                <PercentCell value={coin.price_change_percentage_24h_in_currency} />
-                <PercentCell value={coin.price_change_percentage_7d_in_currency} />
-                <PercentCell value={coin.price_change_percentage_30d_in_currency} />
-                <td className="px-4 py-4 text-right tabular-nums text-ink">
+                {columnVisibility.change24h && (
+                  <PercentCell value={coin.price_change_percentage_24h_in_currency} />
+                )}
+                {columnVisibility.change7d && (
+                  <PercentCell value={coin.price_change_percentage_7d_in_currency} />
+                )}
+                {columnVisibility.change30d && (
+                  <PercentCell value={coin.price_change_percentage_30d_in_currency} />
+                )}
+                <td className="px-2 py-4 text-right tabular-nums text-ink">
                   {compactUsdFormatter.format(coin.market_cap)}
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-2 py-4">
                   <div className="flex flex-col items-center gap-1">
                     <div
                       aria-hidden
@@ -214,7 +260,7 @@ export default function CoinTable({
                       <span className="rounded-full px-2 py-0.5">Price</span>
                       <span className="rounded-full px-2 py-0.5">Date</span>
                     </div>
-                    <div className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-3 py-1.5">
+                    <div className="inline-flex w-full max-w-[84px] items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
                       <span className="text-muted">$</span>
                       <input
                         type="number"
@@ -225,12 +271,12 @@ export default function CoinTable({
                           onAmountChange(coin.id, Number(e.target.value) || 0)
                         }
                         placeholder="0"
-                        className="w-20 bg-transparent text-right tabular-nums text-ink focus:outline-none"
+                        className="w-full min-w-0 bg-transparent text-right tabular-nums text-ink focus:outline-none"
                       />
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-2 py-4">
                   <EntryPriceInput
                     coinId={coin.id}
                     entryPrice={entryPrice}

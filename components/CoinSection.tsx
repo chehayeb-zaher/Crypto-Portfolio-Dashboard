@@ -3,7 +3,11 @@
 import { useMemo, useState } from "react";
 import type { CoinMarketData } from "@/types/coingecko";
 import type { Holding } from "@/lib/holdings";
-import CoinTable, { type SortDirection, type SortKey } from "@/components/CoinTable";
+import CoinTable, {
+  type ColumnVisibility,
+  type SortDirection,
+  type SortKey,
+} from "@/components/CoinTable";
 import { filterAndSortCoins } from "@/lib/coinSort";
 
 export default function CoinSection({
@@ -13,6 +17,7 @@ export default function CoinSection({
   holdings,
   onAmountChange,
   onEntryChange,
+  columnVisibility,
 }: {
   title: string;
   coins: CoinMarketData[];
@@ -24,6 +29,7 @@ export default function CoinSection({
     entryPrice: number | null,
     entryDate: string | null
   ) => void;
+  columnVisibility: ColumnVisibility;
 }) {
   const [sortKey, setSortKey] = useState<SortKey>("rank");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -56,6 +62,7 @@ export default function CoinSection({
         holdings={holdings}
         onAmountChange={onAmountChange}
         onEntryChange={onEntryChange}
+        columnVisibility={columnVisibility}
       />
 
       {visibleCoins.length === 0 && (
