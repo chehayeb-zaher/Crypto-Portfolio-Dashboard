@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Mode = "price" | "date";
 
@@ -12,6 +12,9 @@ const usdFormatter = new Intl.NumberFormat("en-US", {
 });
 
 const today = () => new Date().toISOString().slice(0, 10);
+
+/** Only digits and at most one decimal point — matches what a price can look like while it's being typed. */
+const PARTIAL_NUMBER = /^\d*\.?\d*$/;
 
 export default function EntryPriceInput({
   coinId,
@@ -29,6 +32,22 @@ export default function EntryPriceInput({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Kept as its own text buffer (separate from the parsed `entryPrice` prop)
+  // so typing leading zeros like "0.0000045" doesn't get wiped mid-keystroke —
+  // `Number("0")` is falsy, so round-tripping through the numeric prop on
+  // every keystroke would reset the field the instant the typed-so-far value
+  // is exactly zero.
+  const [priceText, setPriceText] = useState(entryPrice !== null ? String(entryPrice) : "");
+
+  useEffect(() => {
+    const parsedLocal = priceText === "" ? null : Number(priceText);
+    if (parsedLocal !== entryPrice) {
+      setPriceText(entryPrice !== null ? String(entryPrice) : "");
+    }
+    // Only resync when the external value changes; typing is handled locally.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entryPrice]);
+
   function switchMode(next: Mode) {
     setMode(next);
     setError(null);
@@ -38,6 +57,17 @@ export default function EntryPriceInput({
       setDateInput("");
       onChange(null, null);
     }
+  }
+
+  function handlePriceTextChange(raw: string) {
+    if (raw !== "" && !PARTIAL_NUMBER.test(raw)) return;
+    setPriceText(raw);
+    if (raw === "" || raw === ".") {
+      onChange(null, null);
+      return;
+    }
+    const parsed = Number(raw);
+    onChange(Number.isNaN(parsed) ? null : parsed, null);
   }
 
   async function handleDateChange(value: string) {
@@ -96,13 +126,12 @@ export default function EntryPriceInput({
         <div className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
           <span className="text-muted">$</span>
           <input
-            type="number"
-            min={0}
-            step="any"
-            value={entryPrice ?? ""}
-            onChange={(e) => onChange(Number(e.target.value) || null, null)}
+            type="text"
+            inputMode="decimal"
+            value={priceText}
+            onChange={(e) => handlePriceTextChange(e.target.value)}
             placeholder="0.00"
-            className="w-16 bg-transparent text-right tabular-nums text-ink focus:outline-none"
+            className="w-20 bg-transparent text-right text-xs tabular-nums text-ink focus:outline-none"
           />
         </div>
       ) : (

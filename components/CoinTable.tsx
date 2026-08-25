@@ -1,8 +1,54 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { CoinMarketData } from "@/types/coingecko";
 import type { Holding } from "@/lib/holdings";
 import EntryPriceInput from "@/components/EntryPriceInput";
+
+/** Only digits and at most one decimal point — matches what an amount can look like while it's being typed. */
+const PARTIAL_NUMBER = /^\d*\.?\d*$/;
+
+/**
+ * Kept as its own text buffer (separate from the parsed `value` prop) so
+ * typing decimals like "0.5" doesn't get wiped mid-keystroke — `Number("0")`
+ * is falsy, so round-tripping through a numeric prop on every keystroke
+ * resets the field the instant the typed-so-far value is exactly zero.
+ */
+function AmountInput({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+}) {
+  const [text, setText] = useState(value ? String(value) : "");
+
+  useEffect(() => {
+    const parsedLocal = text === "" ? 0 : Number(text);
+    if (parsedLocal !== value) {
+      setText(value ? String(value) : "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  function handleChange(raw: string) {
+    if (raw !== "" && !PARTIAL_NUMBER.test(raw)) return;
+    setText(raw);
+    const parsed = raw === "" || raw === "." ? 0 : Number(raw);
+    onChange(Number.isNaN(parsed) ? 0 : parsed);
+  }
+
+  return (
+    <input
+      type="text"
+      inputMode="decimal"
+      value={text}
+      onChange={(e) => handleChange(e.target.value)}
+      placeholder="0"
+      className="w-full min-w-0 bg-transparent text-right tabular-nums text-ink focus:outline-none"
+    />
+  );
+}
 
 export type SortKey =
   | "rank"
@@ -262,16 +308,9 @@ export default function CoinTable({
                     </div>
                     <div className="inline-flex w-full max-w-[84px] items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
                       <span className="text-muted">$</span>
-                      <input
-                        type="number"
-                        min={0}
-                        step={100}
-                        value={holdings[coin.id]?.amount ?? ""}
-                        onChange={(e) =>
-                          onAmountChange(coin.id, Number(e.target.value) || 0)
-                        }
-                        placeholder="0"
-                        className="w-full min-w-0 bg-transparent text-right tabular-nums text-ink focus:outline-none"
+                      <AmountInput
+                        value={amount}
+                        onChange={(value) => onAmountChange(coin.id, value)}
                       />
                     </div>
                   </div>
