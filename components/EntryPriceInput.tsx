@@ -106,7 +106,7 @@ export default function EntryPriceInput({
           type="button"
           onClick={() => switchMode("price")}
           className={`rounded-full px-2 py-0.5 ${
-            mode === "price" ? "bg-navy text-white" : "text-muted hover:text-ink"
+            mode === "price" ? "bg-primary text-white" : "text-muted hover:text-ink"
           }`}
         >
           Price
@@ -115,7 +115,7 @@ export default function EntryPriceInput({
           type="button"
           onClick={() => switchMode("date")}
           className={`rounded-full px-2 py-0.5 ${
-            mode === "date" ? "bg-navy text-white" : "text-muted hover:text-ink"
+            mode === "date" ? "bg-primary text-white" : "text-muted hover:text-ink"
           }`}
         >
           Date
@@ -123,7 +123,7 @@ export default function EntryPriceInput({
       </div>
 
       {mode === "price" ? (
-        <div className="inline-flex items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
+        <div className="inline-flex items-center gap-1 rounded-lg border border-line bg-white px-2 py-1.5">
           <span className="text-muted">$</span>
           <input
             type="text"
@@ -141,7 +141,7 @@ export default function EntryPriceInput({
             value={dateInput}
             max={today()}
             onChange={(e) => handleDateChange(e.target.value)}
-            className="w-full rounded-full border border-line bg-white px-2 py-1.5 text-xs text-ink focus:outline-none"
+            className="w-full rounded-lg border border-line bg-white px-2 py-1.5 text-xs text-ink focus:outline-none"
           />
           {loading && (
             <span className="text-[11px] text-muted">Fetching price…</span>

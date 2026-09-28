@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 body {
-  background-color: #f4f1e6;
-  color: #181259;
+  background-color: #ffffff;
+  color: #0d1421;
   font-family: var(--font-body), -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 .font-display {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-body), -apple-system, sans-serif;
 }
 
 .eyebrow::before {

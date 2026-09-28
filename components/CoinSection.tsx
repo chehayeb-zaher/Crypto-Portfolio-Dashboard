@@ -50,9 +50,7 @@ export default function CoinSection({
 
   return (
     <section className="mb-14">
-      <h2 className="font-display mb-5 text-2xl uppercase tracking-wide text-ink">
-        {title}
-      </h2>
+      <h2 className="mb-5 text-xl font-bold tracking-tight text-ink">{title}</h2>
 
       <CoinTable
         coins={visibleCoins}

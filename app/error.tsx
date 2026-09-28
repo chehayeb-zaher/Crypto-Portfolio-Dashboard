@@ -12,7 +12,7 @@ export default function Error({
       <span className="eyebrow inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
         Something went wrong
       </span>
-      <h1 className="font-display mt-3 text-3xl uppercase tracking-wide text-ink">
+      <h1 className="mt-3 text-2xl font-bold tracking-tight text-ink">
         Crypto Dashboard
       </h1>
       <p className="mt-4 text-sm text-down">
@@ -20,7 +20,7 @@ export default function Error({
       </p>
       <button
         onClick={reset}
-        className="mt-6 rounded-full border border-navy px-5 py-2 text-sm font-semibold text-navy hover:opacity-70"
+        className="mt-6 rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
       >
         Retry
       </button>

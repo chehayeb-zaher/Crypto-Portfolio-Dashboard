@@ -100,7 +100,7 @@ export default function CoinDashboard({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search coins..."
-            className="w-full rounded-full border border-line bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-navy"
+            className="w-full rounded-lg border border-line bg-white py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
 
@@ -115,7 +115,7 @@ export default function CoinDashboard({
                 onClick={() => toggleColumn(col.key)}
                 className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition-colors ${
                   columnVisibility[col.key]
-                    ? "border-navy bg-navy text-white"
+                    ? "border-primary bg-primary text-white"
                     : "border-line bg-white text-muted hover:text-ink"
                 }`}
               >
@@ -126,7 +126,7 @@ export default function CoinDashboard({
 
           <button
             onClick={() => setIsPortfolioOpen(true)}
-            className="rounded-full bg-navy px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-85"
+            className="rounded-lg bg-primary px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-90"
           >
             Portfolio
           </button>

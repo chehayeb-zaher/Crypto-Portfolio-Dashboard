@@ -17,7 +17,7 @@ function formatPercent(value: number): string {
 }
 
 const PALETTE = [
-  "#12104A",
+  "#3861FB",
   "#6E56CF",
   "#0EA5E9",
   "#F5A524",
@@ -99,11 +99,11 @@ export default function PortfolioModal({
 
   return (
     <div
-      className="fixed inset-0 z-[600] flex items-center justify-center bg-navy/55 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[600] flex items-center justify-center bg-ink/50 p-6 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="max-h-[86vh] w-full max-w-4xl overflow-y-auto rounded-[28px] bg-white p-8 sm:p-12"
+        className="max-h-[86vh] w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-8 shadow-xl sm:p-12"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-8 flex items-start justify-between">
@@ -128,7 +128,7 @@ export default function PortfolioModal({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="rounded-full border border-line px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink hover:opacity-70"
+            className="rounded-lg border border-line px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-ink hover:bg-surface"
           >
             Close
           </button>
@@ -180,7 +180,7 @@ export default function PortfolioModal({
             <div className="overflow-x-auto border border-line">
               <table className="w-full min-w-[640px] border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-line bg-mist/60">
+                  <tr className="border-b border-line bg-surface">
                     <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted">
                       Asset
                     </th>
@@ -255,7 +255,7 @@ export default function PortfolioModal({
                   })}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-line bg-mist/60 font-semibold">
+                  <tr className="border-t border-line bg-surface font-semibold">
                     <td className="px-4 py-3 text-ink" colSpan={4}>
                       Total
                     </td>

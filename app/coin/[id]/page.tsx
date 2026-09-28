@@ -86,14 +86,14 @@ export default async function CoinDetailPage({
           <span className="eyebrow inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
             Rank #{coin.market_cap_rank ?? "—"} · {coin.symbol}
           </span>
-          <h1 className="font-display mt-1 text-4xl uppercase tracking-wide text-ink sm:text-5xl">
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             {coin.name}
           </h1>
         </div>
       </div>
 
       <div className="mt-10 flex flex-wrap items-baseline gap-4">
-        <span className="font-display text-4xl text-ink">
+        <span className="text-4xl font-bold text-ink">
           {usdFormatter.format(md.current_price.usd)}
         </span>
         <span
@@ -144,9 +144,7 @@ export default async function CoinDetailPage({
 
       {truncatedDescription && (
         <div className="mt-12 max-w-3xl">
-          <h2 className="font-display text-xl uppercase tracking-wide text-ink">
-            About {coin.name}
-          </h2>
+          <h2 className="text-lg font-bold text-ink">About {coin.name}</h2>
           <p className="mt-4 leading-relaxed text-muted">
             {truncatedDescription}
           </p>
@@ -162,7 +160,7 @@ export default async function CoinDetailPage({
               href={coin.links.homepage[0]}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-navy px-5 py-2 text-sm font-semibold text-navy hover:opacity-70"
+              className="rounded-lg bg-primary px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
             >
               Website ↗
             </a>
@@ -172,7 +170,7 @@ export default async function CoinDetailPage({
               href={`https://twitter.com/${coin.links.twitter_screen_name}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-line px-5 py-2 text-sm font-semibold text-ink hover:opacity-70"
+              className="rounded-lg border border-line px-5 py-2 text-sm font-semibold text-ink hover:bg-surface"
             >
               Twitter / X ↗
             </a>
@@ -182,7 +180,7 @@ export default async function CoinDetailPage({
               href={coin.links.subreddit_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-line px-5 py-2 text-sm font-semibold text-ink hover:opacity-70"
+              className="rounded-lg border border-line px-5 py-2 text-sm font-semibold text-ink hover:bg-surface"
             >
               Reddit ↗
             </a>

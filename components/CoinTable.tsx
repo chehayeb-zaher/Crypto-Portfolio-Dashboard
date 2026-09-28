@@ -223,7 +223,7 @@ export default function CoinTable({
           ))}
         </colgroup>
         <thead>
-          <tr className="border-b border-line bg-mist/60">
+          <tr className="border-b border-line bg-surface">
             {columns.map((col, i) =>
               col.sortable === false ? (
                 <th
@@ -257,7 +257,7 @@ export default function CoinTable({
             return (
               <tr
                 key={coin.id}
-                className="border-b border-line last:border-0 hover:bg-mist/40"
+                className="border-b border-line last:border-0 hover:bg-surface"
               >
                 <td className="px-2 py-4 text-muted">{coin.market_cap_rank}</td>
                 <td className="px-2 py-4">
@@ -306,7 +306,7 @@ export default function CoinTable({
                       <span className="rounded-full px-2 py-0.5">Price</span>
                       <span className="rounded-full px-2 py-0.5">Date</span>
                     </div>
-                    <div className="inline-flex w-full max-w-[84px] items-center gap-1 rounded-full border border-line bg-white px-2 py-1.5">
+                    <div className="inline-flex w-full max-w-[84px] items-center gap-1 rounded-lg border border-line bg-white px-2 py-1.5">
                       <span className="text-muted">$</span>
                       <AmountInput
                         value={amount}

@@ -5,18 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        up: "#16A672",
-        down: "#D6394A",
-        navy: "#12104A",
-        "navy-2": "#0B0930",
-        ink: "#181259",
-        cream: "#F4F1E6",
-        mist: "#EBE8DC",
-        muted: "#5A5578",
-        line: "rgba(24, 18, 89, 0.14)",
+        up: "#16C784",
+        down: "#EA3943",
+        primary: "#3861FB",
+        ink: "#0D1421",
+        muted: "#616E85",
+        line: "#EFF2F5",
+        surface: "#F5F6FA",
       },
       fontFamily: {
-        display: ["var(--font-display)", "Georgia", "serif"],
+        display: ["var(--font-body)", "-apple-system", "sans-serif"],
         body: ["var(--font-body)", "-apple-system", "sans-serif"],
       },
       keyframes: {

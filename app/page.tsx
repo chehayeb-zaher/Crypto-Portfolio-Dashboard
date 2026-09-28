@@ -13,7 +13,7 @@ export default async function Home() {
             <span>Live Market Data</span>
           </div>
         </div>
-        <h1 className="font-display mt-3 text-4xl uppercase tracking-wide text-ink sm:text-5xl">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
           Crypto Dashboard
         </h1>
       </div>
