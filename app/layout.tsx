@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Crypto Dashboard",
+  title: "Crypto Portfolio Dashboard",
   description: "Top 20 cryptocurrencies by market cap, via CoinGecko",
 };
 

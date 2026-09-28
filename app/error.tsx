@@ -12,8 +12,8 @@ export default function Error({
       <span className="eyebrow inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted">
         Something went wrong
       </span>
-      <h1 className="mt-3 text-2xl font-bold tracking-tight text-ink">
-        Crypto Dashboard
+      <h1 className="mt-3 text-2xl font-bold tracking-tight text-primary">
+        Crypto Portfolio Dashboard
       </h1>
       <p className="mt-4 text-sm text-down">
         Failed to load market data: {error.message}
